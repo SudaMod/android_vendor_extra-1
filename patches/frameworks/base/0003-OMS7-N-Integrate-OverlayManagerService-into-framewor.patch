@@ -872,7 +872,7 @@ index 4c2f94d63ab..b9954573d79 100644
                  sharedRes = const_cast<AssetManager*>(this)->
                      mZipSet.setZipResourceTable(ap.path, sharedRes);
              }
-@@ -772,65 +750,6 @@ Asset* AssetManager::openIdmapLocked(const struct asset_path& ap) const
+@@ -772,66 +750,6 @@ Asset* AssetManager::openIdmapLocked(const struct asset_path& ap) const
      return ass;
  }
  
@@ -920,6 +920,7 @@ index 4c2f94d63ab..b9954573d79 100644
 -            const_cast<AssetManager*>(this)->mZipSet.addOverlay(targetPackagePath, oap);
 -
 -            oidmap->close();
+-            delete oidmap;
 -            ALOGD("close idmap=%s pid=%d\n", oap.idmap.string(), getpid());
 -       }
 -
