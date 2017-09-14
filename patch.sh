@@ -10,6 +10,7 @@ REPOSITORIES=(
     'packages/apps/PhoneCommon'
     'packages/apps/Settings'
     'system/sepolicy'
+    'vendor/sm'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
