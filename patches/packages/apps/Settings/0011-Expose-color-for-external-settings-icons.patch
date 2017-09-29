@@ -45,7 +45,7 @@ index 6b2e145dc3..c29da4308e 100755
 --- a/src/com/android/settings/dashboard/DashboardAdapter.java
 +++ b/src/com/android/settings/dashboard/DashboardAdapter.java
 @@ -114,10 +114,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
-         mSuggestions = suggestions;
+         }
          mCategories = categories;
  
 -        // TODO: Better place for tinting?
