@@ -40,7 +40,7 @@ index 00000000000..6b2dcc4a675
 +-->
 +
 +<selector xmlns:android="http://schemas.android.com/apk/res/android">
-+    <item android:drawable="@drawable/ic_audio_ring_notif" />
++    <item android:drawable="@drawable/ic_lock_ring" />
 +</selector>
 diff --git a/core/res/res/drawable/ic_power_audio_ring_notif_mute.xml b/core/res/res/drawable/ic_power_audio_ring_notif_mute.xml
 new file mode 100644
@@ -66,7 +66,7 @@ index 00000000000..dab250cc2d8
 +-->
 +
 +<selector xmlns:android="http://schemas.android.com/apk/res/android">
-+    <item android:drawable="@drawable/ic_audio_ring_notif_mute" />
++    <item android:drawable="@drawable/ic_lock_dnd_total_silence" />
 +</selector>
 diff --git a/core/res/res/drawable/ic_power_audio_ring_notif_vibrate.xml b/core/res/res/drawable/ic_power_audio_ring_notif_vibrate.xml
 new file mode 100644
@@ -92,7 +92,7 @@ index 00000000000..f278ccbf980
 +-->
 +
 +<selector xmlns:android="http://schemas.android.com/apk/res/android">
-+    <item android:drawable="@drawable/ic_audio_ring_notif_vibrate" />
++    <item android:drawable="@drawable/ic_lock_dnd_priority" />
 +</selector>
 diff --git a/core/res/res/layout/global_actions_silent_mode.xml b/core/res/res/layout/global_actions_silent_mode.xml
 index a3586232a15..3fe7bbec960 100644
@@ -102,7 +102,7 @@ index a3586232a15..3fe7bbec960 100644
              android:layout_marginEnd="8dp"
              android:layout_marginTop="6dp"
              android:layout_marginBottom="6dp"
--            android:src="@drawable/ic_audio_ring_notif_mute"
+-            android:src="@drawable/ic_lock_dnd_total_silence"
 +            android:src="@drawable/ic_power_audio_ring_notif_mute"
              android:scaleType="center"
              android:duplicateParentState="true"
@@ -111,16 +111,16 @@ index a3586232a15..3fe7bbec960 100644
              android:layout_marginEnd="8dp"
              android:layout_marginTop="6dp"
              android:layout_marginBottom="6dp"
--            android:src="@drawable/ic_audio_ring_notif_vibrate"
+-            android:src="@drawable/ic_lock_dnd_priority"
 +            android:src="@drawable/ic_power_audio_ring_notif_vibrate"
              android:scaleType="center"
              android:duplicateParentState="true"
              android:background="@drawable/silent_mode_indicator"
-@@ -94,7 +94,7 @@
+@@ -124,7 +124,7 @@
              android:layout_marginEnd="8dp"
              android:layout_marginTop="6dp"
              android:layout_marginBottom="6dp"
--            android:src="@drawable/ic_audio_ring_notif"
+-            android:src="@drawable/ic_lock_ring"
 +            android:src="@drawable/ic_power_audio_ring_notif"
              android:scaleType="center"
              android:duplicateParentState="true"
