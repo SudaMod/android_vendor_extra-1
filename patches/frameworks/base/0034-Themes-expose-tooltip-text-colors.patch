@@ -1,0 +1,58 @@
+From b596af901566d6c09713f462c7a7e59abc21138a Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Mon, 2 Apr 2018 18:38:19 +0000
+Subject: [PATCH 34/37] Themes: expose tooltip text colors
+
+* tooltip background already has its own color resource
+  but text color is using foreground color
+
+* with seperate resource for tooltip text, themes can force tooltip to dark on
+  both light and dark styles
+
+Change-Id: I9a5ecd507ada7600a6e3d9428a4fc7cbf895d670
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ core/res/res/values/projekt_colors.xml  | 6 ++++++
+ core/res/res/values/themes_material.xml | 4 ++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/core/res/res/values/projekt_colors.xml b/core/res/res/values/projekt_colors.xml
+index 860f677e2bd..37cb25403cd 100644
+--- a/core/res/res/values/projekt_colors.xml
++++ b/core/res/res/values/projekt_colors.xml
+@@ -40,4 +40,10 @@
+     <!-- App permission tint -->
+     <color name="app_permission_icon_tint">@android:color/black</color>
+ 
++    <!-- tooltip light text color -->
++    <color name="tooltip_text_light">@color/foreground_material_light</color>
++
++    <!-- tooltip dark text color -->
++    <color name="tooltip_text_dark">@color/foreground_material_dark</color>
++
+ </resources>
+diff --git a/core/res/res/values/themes_material.xml b/core/res/res/values/themes_material.xml
+index 9dafa7a0284..578c5259fcb 100644
+--- a/core/res/res/values/themes_material.xml
++++ b/core/res/res/values/themes_material.xml
+@@ -403,7 +403,7 @@ please see themes_device_defaults.xml.
+         <item name="colorSwitchThumbNormal">@color/switch_thumb_material_dark</item>
+ 
+         <!-- Tooltip popup properties -->
+-        <item name="tooltipForegroundColor">@color/foreground_material_light</item>
++        <item name="tooltipForegroundColor">@color/tooltip_text_light</item>
+         <item name="tooltipBackgroundColor">@color/tooltip_background_light</item>
+     </style>
+ 
+@@ -773,7 +773,7 @@ please see themes_device_defaults.xml.
+         <item name="colorSwitchThumbNormal">@color/switch_thumb_material_light</item>
+ 
+         <!-- Tooltip popup properties -->
+-        <item name="tooltipForegroundColor">@color/foreground_material_dark</item>
++        <item name="tooltipForegroundColor">@color/tooltip_text_dark</item>
+         <item name="tooltipBackgroundColor">@color/tooltip_background_dark</item>
+     </style>
+ 
+-- 
+2.18.0
+

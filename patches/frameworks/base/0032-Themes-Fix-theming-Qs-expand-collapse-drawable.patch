@@ -1,0 +1,47 @@
+From 818d9dc988344081f964c4ae2818912a283cb719 Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Thu, 22 Mar 2018 08:03:05 +0000
+Subject: [PATCH 32/37] Themes: Fix theming Qs expand/collapse drawable
+
+* commit: SubstratumResources/platform_frameworks_base@79d56d1
+  added ability to seperate expand/collapse drawable from volume panel
+  but animation are still pointing to volume drawable
+
+* Point it to right drawable to seperate it fully
+
+Change-Id: Ic959bcdd24eb2f56b3de66369cc9907ac1978b9f
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml | 2 +-
+ packages/SystemUI/res/drawable/ic_qs_expand_animation.xml   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml b/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
+index 18c6307b9ad..adc107e2ce7 100644
+--- a/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
++++ b/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
+@@ -15,7 +15,7 @@
+ -->
+ <animated-vector
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:drawable="@drawable/ic_volume_collapse" >
++    android:drawable="@drawable/ic_qs_collapse" >
+     <target
+         android:name="right"
+         android:animation="@anim/ic_caret_down_right_animation" />
+diff --git a/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml b/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
+index abd6678e335..9d132bf2135 100644
+--- a/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
++++ b/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
+@@ -15,7 +15,7 @@
+ -->
+ <animated-vector
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:drawable="@drawable/ic_volume_expand" >
++    android:drawable="@drawable/ic_qs_expand" >
+     <target
+         android:name="right"
+         android:animation="@anim/ic_caret_up_right_animation" />
+-- 
+2.18.0
+

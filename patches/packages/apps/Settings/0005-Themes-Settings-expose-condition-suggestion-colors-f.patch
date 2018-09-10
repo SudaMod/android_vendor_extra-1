@@ -1,0 +1,256 @@
+From 10bef66d22e751069559d8f68f461a1ba4a11b7d Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Sat, 23 Dec 2017 14:18:17 +0000
+Subject: [PATCH 5/9] Themes: Settings: expose condition/suggestion colors for
+ themes
+
+* With this patch, themer now can fully theme suggestion and condition without any hassles.
+
+* Based on daveyannihilation's previous work on Nougat:
+  Settings: Expose condition card colors
+  SubstratumResources/platform_packages_apps_settings@90d9cb1
+
+* Forward ported and adapted to new oreo suggestion/condition changes
+
+* This commit also adds ability to tint suggestion app icon, inspired from TheRingMaster commit:
+  The blueman group have left the building..
+  GZOSP/packages_apps_settings@9dc2591
+
+  Instead of tiniting by default, kept tint value transparent to retain aosp default/look,
+  So if themer wants can tint it with any color.
+
+Change-Id: I0cf7cdd8aa179d91d9fdca32116a48cd3b05209a
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+Signed-off-by: Harsh Shandilya <harsh@prjkt.io>
+---
+ res/layout/condition_header_icon.xml          |  2 +-
+ res/layout/condition_tile.xml                 | 10 ++++----
+ res/layout/suggestion_condition_header.xml    |  4 ++--
+ res/layout/suggestion_tile.xml                |  8 ++++---
+ .../suggestion_tile_remote_container.xml      |  2 +-
+ res/values/projekt_colors.xml                 | 23 +++++++++++++++++++
+ .../settings/dashboard/DashboardAdapter.java  | 18 +++++++--------
+ 7 files changed, 45 insertions(+), 22 deletions(-)
+
+diff --git a/res/layout/condition_header_icon.xml b/res/layout/condition_header_icon.xml
+index 4f93f547c2..f66be7fad4 100644
+--- a/res/layout/condition_header_icon.xml
++++ b/res/layout/condition_header_icon.xml
+@@ -21,5 +21,5 @@
+     android:layout_height="@dimen/dashboard_tile_image_size"
+     android:layout_marginStart="0dp"
+     android:layout_marginEnd="24dp"
+-    android:tint="?android:attr/colorAccent"
++    android:tint="@color/condition_card_header_icon_color"
+     android:scaleType="centerInside"/>
+diff --git a/res/layout/condition_tile.xml b/res/layout/condition_tile.xml
+index 3e2f9b4938..96b8e9dbdb 100644
+--- a/res/layout/condition_tile.xml
++++ b/res/layout/condition_tile.xml
+@@ -35,7 +35,7 @@
+             android:layout_marginTop="12dp"
+             android:layout_marginStart="14dp"
+             android:layout_marginEnd="24dp"
+-            android:tint="?android:attr/colorAccent" />
++            android:tint="@color/condition_card_icon_color" />
+ 
+         <TextView
+             android:id="@android:id/title"
+@@ -43,7 +43,7 @@
+             android:layout_height="wrap_content"
+             android:layout_marginTop="14dp"
+             android:textAppearance="?android:attr/textAppearanceSmall"
+-            android:textColor="?android:attr/textColorPrimary" />
++            android:textColor="@color/condition_card_title_text_color" />
+ 
+     </LinearLayout>
+ 
+@@ -56,7 +56,7 @@
+         android:paddingBottom="8dp"
+         android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+         android:alpha=".7"
+-        android:textColor="?android:attr/textColorPrimary" />
++        android:textColor="@color/condition_card_summary_text_color" />
+ 
+     <android.support.v7.widget.ButtonBarLayout
+         android:id="@+id/buttonBar"
+@@ -75,7 +75,7 @@
+             android:paddingStart="0dp"
+             android:alpha=".8"
+             android:textAlignment="viewStart"
+-            android:textColor="?android:attr/textColorPrimary"
++            android:textColor="@color/condition_card_first_button_text_color"
+             style="?android:attr/buttonBarButtonStyle" />
+ 
+         <Button
+@@ -85,7 +85,7 @@
+             android:layout_weight="1"
+             android:alpha=".8"
+             android:textAlignment="viewStart"
+-            android:textColor="?android:attr/textColorPrimary"
++            android:textColor="@color/condition_card_second_button_text_color"
+             style="?android:attr/buttonBarButtonStyle" />
+ 
+     </android.support.v7.widget.ButtonBarLayout>
+diff --git a/res/layout/suggestion_condition_header.xml b/res/layout/suggestion_condition_header.xml
+index 2551b65503..0623aedaa5 100644
+--- a/res/layout/suggestion_condition_header.xml
++++ b/res/layout/suggestion_condition_header.xml
+@@ -59,7 +59,7 @@
+             android:layout_centerVertical="true"
+             android:gravity="end"
+             android:textAppearance="@style/TextAppearance.SuggestionTitle"
+-            android:textColor="?android:attr/colorAccent" />
++            android:textColor="@color/suggestion_condition_card_header_summary_text_color" />
+ 
+         <TextView
+             android:id="@android:id/title"
+@@ -71,7 +71,7 @@
+             android:singleLine="true"
+             android:ellipsize="end"
+             android:textAppearance="@style/TextAppearance.SuggestionTitle"
+-            android:textColor="?android:attr/colorAccent" />
++            android:textColor="@color/suggestion_condition_card_header_title_text_color" />
+ 
+         <LinearLayout
+             android:id="@+id/additional_icons"
+diff --git a/res/layout/suggestion_tile.xml b/res/layout/suggestion_tile.xml
+index 5be9550af8..ce320661c9 100644
+--- a/res/layout/suggestion_tile.xml
++++ b/res/layout/suggestion_tile.xml
+@@ -23,7 +23,7 @@
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:background="?android:attr/colorBackground"
++        android:background="@color/suggestion_card_background_color"
+         android:gravity="center_vertical"
+         android:orientation="horizontal"
+         android:minHeight="@dimen/dashboard_tile_minimum_height">
+@@ -32,6 +32,7 @@
+             android:id="@android:id/icon"
+             android:layout_width="@dimen/dashboard_tile_image_size"
+             android:layout_height="@dimen/dashboard_tile_image_size"
++            android:tint="@color/suggestion_card_icon_tint_color"
+             android:layout_marginStart="14dp"
+             android:layout_marginEnd="24dp"/>
+ 
+@@ -45,6 +46,7 @@
+                 android:layout_height="wrap_content"
+                 android:singleLine="true"
+                 android:textAppearance="@style/TextAppearance.TileTitle"
++                android:textColor="@color/suggestion_card_title_text_color"
+                 android:ellipsize="marquee"
+                 android:fadingEdge="horizontal"/>
+ 
+@@ -52,7 +54,7 @@
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="@style/TextAppearance.Small"
+-                android:textColor="?android:attr/textColorSecondary"/>
++                android:textColor="@color/suggestion_card_summary_text_color"/>
+ 
+         </LinearLayout>
+ 
+@@ -60,4 +62,4 @@
+ 
+     <include layout="@layout/horizontal_divider" />
+ 
+-</LinearLayout>
+\ No newline at end of file
++</LinearLayout>
+diff --git a/res/layout/suggestion_tile_remote_container.xml b/res/layout/suggestion_tile_remote_container.xml
+index 023750ee4e..aa9fa96fd6 100644
+--- a/res/layout/suggestion_tile_remote_container.xml
++++ b/res/layout/suggestion_tile_remote_container.xml
+@@ -18,7 +18,7 @@
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+-    android:background="@*android:color/secondary_device_default_settings_light"
++    android:background="@color/suggestion_card_background_color"
+     android:clickable="true"
+     android:focusable="true"
+     android:minHeight="@dimen/dashboard_tile_minimum_height" />
+diff --git a/res/values/projekt_colors.xml b/res/values/projekt_colors.xml
+index ec3094e2ca..3300217182 100644
+--- a/res/values/projekt_colors.xml
++++ b/res/values/projekt_colors.xml
+@@ -28,4 +28,27 @@
+ 
+     <!-- Settings switchbar background -->
+     <color name="switchbar_background_color">?android:attr/colorSecondary</color>
++
++    <!-- Condition card -->
++    <color name="condition_card_icon_color">@*android:color/accent_device_default_light</color>
++    <color name="condition_card_header_icon_color">@*android:color/accent_device_default_light</color>
++    <color name="condition_card_title_text_color">@*android:color/text_color_primary</color>
++    <color name="condition_card_summary_text_color">@*android:color/text_color_primary</color> <!-- layout adds .7 alpha -->
++    <color name="condition_card_first_button_text_color">@*android:color/text_color_primary</color> <!-- layout adds .8 alpha -->
++    <color name="condition_card_second_button_text_color">@*android:color/text_color_primary</color> <!-- layout adds .8 alpha -->
++    <color name="condition_card_count_text_color">@*android:color/accent_device_default_light</color>
++
++    <!-- Suggestion card -->
++    <color name="suggestion_card_background_color">@android:color/white</color>
++    <color name="suggestion_card_icon_tint_color">@android:color/transparent</color> <!-- kept transparent to retain AOSP default, themer can direct it to any color -->
++    <color name="suggestion_card_title_text_color">@*android:color/text_color_primary</color>
++    <color name="suggestion_card_summary_text_color">@*android:color/text_color_secondary</color>
++    <color name="suggestion_card_collapsed_summary_text_color">@android:color/black</color>
++    <color name="suggestion_card_collapsed_title_text_color">@android:color/black</color>
++    <color name="suggestion_card_more_text_color">@android:color/black</color>
++
++    <!-- Suggestion and Condition card header -->
++    <color name="suggestion_condition_card_header_title_text_color">@*android:color/accent_device_default_light</color>
++    <color name="suggestion_condition_card_header_summary_text_color">@*android:color/accent_device_default_light</color>
++
+ </resources>
+diff --git a/src/com/android/settings/dashboard/DashboardAdapter.java b/src/com/android/settings/dashboard/DashboardAdapter.java
+index 46a57c112f..8178212cc8 100644
+--- a/src/com/android/settings/dashboard/DashboardAdapter.java
++++ b/src/com/android/settings/dashboard/DashboardAdapter.java
+@@ -377,9 +377,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
+         }
+ 
+         if (data.hiddenSuggestionCount > 0) {
+-/*
+-            holder.summary.setTextColor(Color.BLACK);
+-*/
++            holder.summary.setTextColor(mContext.getColor(
++                    R.color.suggestion_card_collapsed_summary_text_color));
+             if (curMode == DashboardData.HEADER_MODE_COLLAPSED) {
+                 if (data.conditionCount > 0) {
+                     holder.summary.setText(mContext.getResources().getQuantityString(
+@@ -389,9 +388,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
+                     holder.title.setText(mContext.getResources().getQuantityString(
+                             R.plurals.suggestions_collapsed_title,
+                             data.hiddenSuggestionCount, data.hiddenSuggestionCount));
+-/*
+-                    holder.title.setTextColor(Color.BLACK);
+-*/
++                    holder.title.setTextColor(mContext.getColor(
++                            R.color.suggestion_card_collapsed_title_text_color));
+                     holder.summary.setText(null);
+                 }
+             } else if (curMode == DashboardData.HEADER_MODE_DEFAULT) {
+@@ -401,14 +399,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
+                 } else {
+                     holder.title.setText(mContext.getString(
+                             R.string.suggestions_more_title, data.hiddenSuggestionCount));
+-/*
+-                    holder.title.setTextColor(Color.BLACK);
+-*/
++                    holder.title.setTextColor(mContext.getColor(
++                            R.color.suggestion_card_more_text_color));
+                     holder.summary.setText(null);
+                 }
+             }
+         } else if (data.conditionCount > 1) {
+-            holder.summary.setTextColor(Utils.getColorAccent(mContext));
++            holder.summary.setTextColor(mContext.getColor(
++                    R.color.condition_card_count_text_color));
+             holder.summary.setText(
+                     mContext.getString(R.string.condition_summary, data.conditionCount));
+         } else {
+-- 
+2.18.0
+

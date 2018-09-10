@@ -1,0 +1,40 @@
+From 041098d317f9d3bb5df03bc2bbcfceb7537b0c4d Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Sun, 8 Apr 2018 11:32:05 +0000
+Subject: [PATCH 8/9] Themes: Settings: Fix theming zoom preview timestamp text
+ color
+
+* Time stamp color on screen zoom preview already had exposed color resources
+  but wasn't changing colors when themed
+
+* This patch will fix it by adding getContext() just like messageColor.
+
+before: https://i.imgur.com/92jB9lC.jpg
+after: https://i.imgur.com/8iSmQSz.jpg
+
+Change-Id: I673ad6238c59c1506a4d9375cca27e126cee5d08
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ src/com/android/settings/display/ConversationMessageView.java | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/settings/display/ConversationMessageView.java b/src/com/android/settings/display/ConversationMessageView.java
+index b054444fe5..f83dfb5ff9 100644
+--- a/src/com/android/settings/display/ConversationMessageView.java
++++ b/src/com/android/settings/display/ConversationMessageView.java
+@@ -243,10 +243,11 @@ public class ConversationMessageView extends FrameLayout {
+         final int timestampColorResId = mIncoming ? R.color.timestamp_text_incoming
+                 : R.color.timestamp_text_outgoing;
+         final int messageColor = getContext().getColor(messageColorResId);
++        final int timestampColor = getContext().getColor(timestampColorResId);
+ 
+         mMessageTextView.setTextColor(messageColor);
+         mMessageTextView.setLinkTextColor(messageColor);
+-        mStatusTextView.setTextColor(timestampColorResId);
++        mStatusTextView.setTextColor(timestampColor);
+     }
+ 
+     private static Drawable getTintedDrawable(final Context context, final Drawable drawable,
+-- 
+2.18.0
+

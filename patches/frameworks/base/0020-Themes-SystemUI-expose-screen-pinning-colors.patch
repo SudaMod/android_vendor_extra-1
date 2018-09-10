@@ -1,0 +1,104 @@
+From c3c84ddb81ac1095c4b5aae739feb21d076fbc88 Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Tue, 9 Jan 2018 11:12:00 +0000
+Subject: [PATCH 20/37] Themes: SystemUI: expose screen pinning colors
+
+Change-Id: Iaaa6d54673e11b1c4243e754a6fb088cae534976
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+Signed-off-by: Harsh Shandilya <harsh@prjkt.io>
+---
+ .../SystemUI/res/layout/screen_pinning_request_buttons.xml  | 2 +-
+ .../res/layout/screen_pinning_request_buttons_land.xml      | 2 +-
+ .../res/layout/screen_pinning_request_buttons_sea.xml       | 2 +-
+ .../res/layout/screen_pinning_request_text_area.xml         | 6 +++---
+ packages/SystemUI/res/values/projekt_colors.xml             | 6 ++++++
+ 5 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/packages/SystemUI/res/layout/screen_pinning_request_buttons.xml b/packages/SystemUI/res/layout/screen_pinning_request_buttons.xml
+index c2b1009c313..96b39e2aa5d 100644
+--- a/packages/SystemUI/res/layout/screen_pinning_request_buttons.xml
++++ b/packages/SystemUI/res/layout/screen_pinning_request_buttons.xml
+@@ -28,7 +28,7 @@
+     android:id="@+id/screen_pinning_buttons"
+     android:layout_width="match_parent"
+     android:layout_height="@dimen/screen_pinning_request_button_height"
+-    android:background="?android:attr/colorAccent">
++    android:background="@color/screen_pinning_background_color">
+ 
+     <View
+         android:layout_width="@dimen/screen_pinning_request_side_width"
+diff --git a/packages/SystemUI/res/layout/screen_pinning_request_buttons_land.xml b/packages/SystemUI/res/layout/screen_pinning_request_buttons_land.xml
+index b5ef1d72fd8..5055ce5e51e 100644
+--- a/packages/SystemUI/res/layout/screen_pinning_request_buttons_land.xml
++++ b/packages/SystemUI/res/layout/screen_pinning_request_buttons_land.xml
+@@ -25,7 +25,7 @@
+     android:id="@+id/screen_pinning_buttons"
+     android:layout_height="match_parent"
+     android:layout_width="@dimen/screen_pinning_request_button_height"
+-    android:background="?android:attr/colorAccent"
++    android:background="@color/screen_pinning_background_color"
+     android:orientation="vertical">
+ 
+     <View
+diff --git a/packages/SystemUI/res/layout/screen_pinning_request_buttons_sea.xml b/packages/SystemUI/res/layout/screen_pinning_request_buttons_sea.xml
+index f3a6d44f5ec..947a2e69209 100644
+--- a/packages/SystemUI/res/layout/screen_pinning_request_buttons_sea.xml
++++ b/packages/SystemUI/res/layout/screen_pinning_request_buttons_sea.xml
+@@ -25,7 +25,7 @@
+     android:id="@+id/screen_pinning_buttons"
+     android:layout_height="match_parent"
+     android:layout_width="@dimen/screen_pinning_request_button_height"
+-    android:background="?android:attr/colorAccent"
++    android:background="@color/screen_pinning_background_color"
+     android:orientation="vertical">
+ 
+     <View
+diff --git a/packages/SystemUI/res/layout/screen_pinning_request_text_area.xml b/packages/SystemUI/res/layout/screen_pinning_request_text_area.xml
+index cdad94bd1b2..20d38d9018b 100644
+--- a/packages/SystemUI/res/layout/screen_pinning_request_text_area.xml
++++ b/packages/SystemUI/res/layout/screen_pinning_request_text_area.xml
+@@ -20,7 +20,7 @@
+     android:id="@+id/screen_pinning_text_area"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+-    android:background="?android:attr/colorAccent"
++    android:background="@color/screen_pinning_background_color"
+     android:gravity="center_vertical">
+ 
+     <TextView
+@@ -59,7 +59,7 @@
+         android:paddingEnd="8dp"
+         android:paddingStart="8dp"
+         android:text="@string/screen_pinning_positive"
+-        android:textColor="@android:color/white"
++        android:textColor="@color/screen_pinning_positive_text_color"
+         android:textSize="14sp" />
+ 
+     <Button
+@@ -74,7 +74,7 @@
+         android:paddingEnd="8dp"
+         android:paddingStart="8dp"
+         android:text="@string/screen_pinning_negative"
+-        android:textColor="@android:color/white"
++        android:textColor="@color/screen_pinning_negative_text_color"
+         android:textSize="14sp" />
+ 
+ </RelativeLayout>
+diff --git a/packages/SystemUI/res/values/projekt_colors.xml b/packages/SystemUI/res/values/projekt_colors.xml
+index 37b737d1053..a6b658c0514 100644
+--- a/packages/SystemUI/res/values/projekt_colors.xml
++++ b/packages/SystemUI/res/values/projekt_colors.xml
+@@ -33,4 +33,10 @@
+ 
+     <!-- Power save warning color -->
+     <color name="powersave_warning_color">#ffff0000</color> <!-- red -->
++
++    <!-- Screen pinning colors -->
++    <color name="screen_pinning_background_color">@*android:color/accent_device_default_light</color>
++    <color name="screen_pinning_positive_text_color">@android:color/white</color>
++    <color name="screen_pinning_negative_text_color">@android:color/white</color>
++
+ </resources>
+-- 
+2.18.0
+

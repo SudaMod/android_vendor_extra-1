@@ -1,0 +1,265 @@
+From beab38c15c2c99c9f6bbe2c5a776def1c65e2973 Mon Sep 17 00:00:00 2001
+From: George G <kreach3r@users.noreply.github.com>
+Date: Sat, 25 Feb 2017 18:24:06 +0200
+Subject: [PATCH 7/9] Settings: Introduce Substratum changes.
+
+* Add toggle to force bypass of authorisation checks in the
+  SubstratumService. This is only accessible to owner accounts.
+* Add ApplicationsState filter for Substratum overlays in All
+  apps list.
+
+Change-Id: I4d8ca60ead6fe058e7bc2ef8b7613e77457b3f27
+Signed-off-by: Simao Gomes Viana <xdevs23@outlook.com>
+---
+ res/menu/manage_apps.xml                      |  8 +++++
+ res/values/projekt_strings.xml                | 27 +++++++++++++++
+ res/xml/development_prefs.xml                 |  5 +++
+ .../applications/ManageApplications.java      | 33 ++++++++++++++++++-
+ .../development/DevelopmentSettings.java      | 21 ++++++++++++
+ 5 files changed, 93 insertions(+), 1 deletion(-)
+ create mode 100644 res/values/projekt_strings.xml
+
+diff --git a/res/menu/manage_apps.xml b/res/menu/manage_apps.xml
+index 02ee2bbefd..67f09e5fc8 100644
+--- a/res/menu/manage_apps.xml
++++ b/res/menu/manage_apps.xml
+@@ -29,6 +29,14 @@
+         android:id="@+id/hide_system"
+         android:title="@string/menu_hide_system"
+         android:showAsAction="never" />
++    <item
++        android:id="@+id/show_substratum"
++        android:title="@string/menu_show_substratum"
++        android:showAsAction="never" />
++    <item
++        android:id="@+id/hide_substratum"
++        android:title="@string/menu_hide_substratum"
++        android:showAsAction="never" />
+     <item
+         android:id="@+id/sort_order_alpha"
+         android:title="@string/sort_order_alpha"
+diff --git a/res/values/projekt_strings.xml b/res/values/projekt_strings.xml
+new file mode 100644
+index 0000000000..7b4f8472c4
+--- /dev/null
++++ b/res/values/projekt_strings.xml
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (c) 2016-2017 Projekt Substratum
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
++
++   <!-- Force authorize substratum packages -->
++   <string name="force_authorize_substratum_packages_title">Force authorize every theme app</string>
++   <string name="force_authorize_substratum_packages_summary">Allow theme apps from unknown sources</string>
++
++   <!-- Manage applications: show substratum overlays -->
++   <string name="filter_substratum_apps">Substratum overlays</string>
++   <string name="menu_show_substratum">Show overlays</string>
++   <string name="menu_hide_substratum">Hide overlays</string>
++
++</resources>
+diff --git a/res/xml/development_prefs.xml b/res/xml/development_prefs.xml
+index b58221bb6a..29abc5ab99 100644
+--- a/res/xml/development_prefs.xml
++++ b/res/xml/development_prefs.xml
+@@ -219,6 +219,11 @@
+             android:key="camera_laser_sensor_switch"
+             android:title="@string/camera_laser_sensor_switch" />
+ 
++        <SwitchPreference
++            android:key="force_authorize_substratum_packages"
++            android:title="@string/force_authorize_substratum_packages_title"
++            android:summary="@string/force_authorize_substratum_packages_summary" />
++
+     </PreferenceCategory>
+ 
+     <PreferenceCategory android:key="debug_networking_category"
+diff --git a/src/com/android/settings/applications/ManageApplications.java b/src/com/android/settings/applications/ManageApplications.java
+index 8a7791e0c1..f553ec4d1f 100644
+--- a/src/com/android/settings/applications/ManageApplications.java
++++ b/src/com/android/settings/applications/ManageApplications.java
+@@ -121,6 +121,7 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+ 
+     private static final String EXTRA_SORT_ORDER = "sortOrder";
+     private static final String EXTRA_SHOW_SYSTEM = "showSystem";
++    private static final String EXTRA_SHOW_SUBSTRATUM = "showSubstratum";
+     private static final String EXTRA_HAS_ENTRIES = "hasEntries";
+     private static final String EXTRA_HAS_BRIDGE = "hasBridge";
+ 
+@@ -215,6 +216,7 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+         // Apps that are trusted sources of apks
+         FILTER_LABELS[FILTER_APPS_INSTALL_SOURCES] = R.string.filter_install_sources_apps;
+         FILTERS[FILTER_APPS_INSTALL_SOURCES] = AppStateInstallAppsBridge.FILTER_APP_SOURCES;
++
+     }
+ 
+     // Storage types. Used to determine what the extra item in the list of preferences is.
+@@ -231,6 +233,9 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+     // whether showing system apps.
+     private boolean mShowSystem;
+ 
++    // whether showing substratum overlays.
++    private boolean mShowSubstratum;
++
+     private ApplicationsState mApplicationsState;
+ 
+     public int mListType;
+@@ -347,6 +352,7 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+         if (savedInstanceState != null) {
+             mSortOrder = savedInstanceState.getInt(EXTRA_SORT_ORDER, mSortOrder);
+             mShowSystem = savedInstanceState.getBoolean(EXTRA_SHOW_SYSTEM, mShowSystem);
++            mShowSubstratum = savedInstanceState.getBoolean(EXTRA_SHOW_SUBSTRATUM, mShowSubstratum);
+         }
+ 
+         mInvalidSizeStr = getActivity().getText(R.string.invalid_size_value);
+@@ -559,6 +565,7 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+         mResetAppsHelper.onSaveInstanceState(outState);
+         outState.putInt(EXTRA_SORT_ORDER, mSortOrder);
+         outState.putBoolean(EXTRA_SHOW_SYSTEM, mShowSystem);
++        outState.putBoolean(EXTRA_SHOW_SUBSTRATUM, mShowSubstratum);
+         outState.putBoolean(EXTRA_HAS_ENTRIES, mApplications.mHasReceivedLoadEntries);
+         outState.putBoolean(EXTRA_HAS_BRIDGE, mApplications.mHasReceivedBridgeCallback);
+     }
+@@ -696,6 +703,11 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+                 && mListType != LIST_TYPE_HIGH_POWER);
+ 
+         mOptionsMenu.findItem(R.id.reset_app_preferences).setVisible(mListType == LIST_TYPE_MAIN);
++
++        mOptionsMenu.findItem(R.id.show_substratum).setVisible(!mShowSubstratum
++                && mListType != LIST_TYPE_HIGH_POWER);
++        mOptionsMenu.findItem(R.id.hide_substratum).setVisible(mShowSubstratum
++                && mListType != LIST_TYPE_HIGH_POWER);
+     }
+ 
+     @Override
+@@ -715,6 +727,11 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+                 mShowSystem = !mShowSystem;
+                 mApplications.rebuild(false);
+                 break;
++            case R.id.show_substratum:
++            case R.id.hide_substratum:
++                mShowSubstratum = !mShowSubstratum;
++                mApplications.rebuild(false);
++                break;
+             case R.id.reset_app_preferences:
+                 mResetAppsHelper.buildResetDialog();
+                 return true;
+@@ -1050,7 +1067,7 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+             if (mCompositeFilter != null) {
+                 filterObj = new CompoundFilter(filterObj, mCompositeFilter);
+             }
+-            if (!mManageApplications.mShowSystem) {
++            if (!mManageApplications.mShowSystem && !mManageApplications.mShowSubstratum) {
+                 if (LIST_TYPES_WITH_INSTANT.contains(mManageApplications.mListType)) {
+                     filterObj = new CompoundFilter(filterObj,
+                             ApplicationsState.FILTER_DOWNLOADED_AND_LAUNCHER_AND_INSTANT);
+@@ -1058,7 +1075,21 @@ public class ManageApplications extends InstrumentedPreferenceFragment
+                     filterObj = new CompoundFilter(filterObj,
+                             ApplicationsState.FILTER_DOWNLOADED_AND_LAUNCHER);
+                 }
++                filterObj = new CompoundFilter(filterObj,
++                        ApplicationsState.FILTER_SUBSTRATUM);
++            } else if (!mManageApplications.mShowSystem) {
++                if (LIST_TYPES_WITH_INSTANT.contains(mManageApplications.mListType)) {
++                    filterObj = new CompoundFilter(filterObj,
++                            ApplicationsState.FILTER_DOWNLOADED_AND_LAUNCHER_AND_INSTANT);
++                } else {
++                    filterObj = new CompoundFilter(filterObj,
++                            ApplicationsState.FILTER_DOWNLOADED_AND_LAUNCHER);
++                }
++            } else if (!mManageApplications.mShowSubstratum) {
++                filterObj = new CompoundFilter(filterObj,
++                        ApplicationsState.FILTER_SUBSTRATUM);
+             }
++
+             switch (mLastSortMode) {
+                 case R.id.sort_order_size:
+                     switch (mWhichSize) {
+diff --git a/src/com/android/settings/development/DevelopmentSettings.java b/src/com/android/settings/development/DevelopmentSettings.java
+index 3d9164bc37..3178880c39 100644
+--- a/src/com/android/settings/development/DevelopmentSettings.java
++++ b/src/com/android/settings/development/DevelopmentSettings.java
+@@ -259,6 +259,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+ 
+     private static final String DEVELOPMENT_TOOLS = "development_tools";
+ 
++    private static final String FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES = "force_authorize_substratum_packages";
++
+     private static final int RESULT_DEBUG_APP = 1000;
+     private static final int RESULT_MOCK_LOCATION_APP = 1001;
+ 
+@@ -284,6 +286,9 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+     private boolean mDontPokeProperties;
+     private EnableAdbPreferenceController mEnableAdbController;
+     private SwitchPreference mAdbOverNetwork;
++
++    private SwitchPreference mForceAuthorizeSubstratumPackages;
++
+     private Preference mClearAdbKeys;
+     private SwitchPreference mEnableTerminal;
+     private RestrictedSwitchPreference mKeepScreenOn;
+@@ -482,11 +487,13 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+         mForceAllowOnExternal = findAndInitSwitchPref(FORCE_ALLOW_ON_EXTERNAL_KEY);
+         mPassword = findPreference(LOCAL_BACKUP_PASSWORD);
+         mAllPrefs.add(mPassword);
++        mForceAuthorizeSubstratumPackages = findAndInitSwitchPref(FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES);
+ 
+         if (!mUm.isAdminUser()) {
+             disableForUser(mClearAdbKeys);
+             disableForUser(mEnableTerminal);
+             disableForUser(mPassword);
++            disableForUser(mForceAuthorizeSubstratumPackages);
+         }
+ 
+         mDebugAppPref = findPreference(DEBUG_APP_KEY);
+@@ -923,6 +930,7 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+         updateBluetoothA2dpConfigurationValues();
+         updateAdbOverNetwork();
+         updateRootAccessOptions();
++        updateForceAuthorizeSubstratumPackagesOptions();
+     }
+ 
+     private void updateAdbOverNetwork() {
+@@ -953,6 +961,17 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+         }
+     }
+ 
++    private void writeForceAuthorizeSubstratumPackagesOptions() {
++        Settings.Secure.putInt(getActivity().getContentResolver(),
++                Settings.Secure.FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES,
++                mForceAuthorizeSubstratumPackages.isChecked() ? 1 : 0);
++    }
++
++    private void updateForceAuthorizeSubstratumPackagesOptions() {
++        mForceAuthorizeSubstratumPackages.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
++                Settings.Secure.FORCE_AUTHORIZE_SUBSTRATUM_PACKAGES, 0) != 0);
++    }
++
+     private void resetDangerousOptions() {
+         mDontPokeProperties = true;
+         for (int i = 0; i < mResetSwitchPrefs.size(); i++) {
+@@ -2752,6 +2771,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
+             writeForceResizableOptions();
+         } else if (preference == mBluetoothShowDevicesWithoutNames) {
+             writeBluetoothShowDevicesWithoutUserFriendlyNameOptions();
++        } else if (preference == mForceAuthorizeSubstratumPackages) {
++            writeForceAuthorizeSubstratumPackagesOptions();
+         } else if (preference == mBluetoothDisableAbsVolume) {
+             writeBluetoothDisableAbsVolumeOptions();
+         } else if (preference == mBluetoothEnableInbandRinging) {
+-- 
+2.18.0
+

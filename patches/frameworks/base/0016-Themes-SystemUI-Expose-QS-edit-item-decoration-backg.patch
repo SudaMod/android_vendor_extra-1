@@ -1,0 +1,92 @@
+From 404c2f295955f8b9a492d0426983730f85abdf3f Mon Sep 17 00:00:00 2001
+From: Ivan Iskandar <iiiiskandar14@gmail.com>
+Date: Sun, 18 Sep 2016 21:33:18 +0700
+Subject: [PATCH 16/37] Themes: SystemUI: Expose QS edit item decoration
+ background color
+
+PS2:
+More descriptive color name
+
+nathanchance edit: updated for 7.1 Nougat
+camcory edit: update to 8.1
+
+Change-Id: I9867ca26e7d9dacad37d2b70180a98fede0fb0e8
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ .../SystemUI/res/values/projekt_colors.xml    |  3 +++
+ .../systemui/qs/customize/TileAdapter.java    |  6 +++--
+ .../res/values/projekt_colors.xml             | 23 +++++++++++++++++++
+ 3 files changed, 30 insertions(+), 2 deletions(-)
+ create mode 100644 packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
+
+diff --git a/packages/SystemUI/res/values/projekt_colors.xml b/packages/SystemUI/res/values/projekt_colors.xml
+index e5201a70f74..fa3a56f3125 100644
+--- a/packages/SystemUI/res/values/projekt_colors.xml
++++ b/packages/SystemUI/res/values/projekt_colors.xml
+@@ -27,4 +27,7 @@
+ 
+     <!-- Keyguard affordance circle background -->
+     <color name="keyguard_affordance_circle_background">@android:color/white</color>
++
++    <!-- QS edit page background color -->
++    <color name="qs_edit_item_decoration_bg">@*android:color/secondary_device_default_settings_light</color>
+ </resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
+index 5edfe0eb374..c2f3ec6838f 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
+@@ -483,11 +483,10 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
+         private TileItemDecoration(Context context) {
+             TypedArray ta =
+                     context.obtainStyledAttributes(new int[]{android.R.attr.colorSecondary});
+-            mDrawable = new ColorDrawable(ta.getColor(0, 0));
++            mDrawable = new ColorDrawable();
+             ta.recycle();
+         }
+ 
+-
+         @Override
+         public void onDraw(Canvas c, RecyclerView parent, State state) {
+             super.onDraw(c, parent, state);
+@@ -506,6 +505,9 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
+                         .getLayoutParams();
+                 final int top = child.getTop() + params.topMargin +
+                         Math.round(ViewCompat.getTranslationY(child));
++                // Set drawable color
++                mDrawable.setColor(mContext.getResources().getColor(
++                        R.color.qs_edit_item_decoration_bg));
+                 // Draw full width, in case there aren't tiles all the way across.
+                 mDrawable.setBounds(0, top, width, bottom);
+                 mDrawable.draw(c);
+diff --git a/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml b/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
+new file mode 100644
+index 00000000000..354bb20dba3
+--- /dev/null
++++ b/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
+@@ -0,0 +1,23 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++    Copyright (c) 2017 Projekt Substratum
++
++    Licensed under the Apache License, Version 2.0 (the "License");
++    you may not use this file except in compliance with the License.
++    You may obtain a copy of the License at
++
++        http://www.apache.org/licenses/LICENSE-2.0
++
++    Unless required by applicable law or agreed to in writing, software
++    distributed under the License is distributed on an "AS IS" BASIS,
++    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++    See the License for the specific language governing permissions and
++    limitations under the License.
++-->
++
++<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
++
++    <!-- QS edit page background color -->
++    <color name="qs_edit_item_decoration_bg">@*android:color/secondary_device_default_settings</color>
++
++</resources>
+-- 
+2.18.0
+

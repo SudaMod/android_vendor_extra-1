@@ -1,0 +1,74 @@
+From ba1e7651d06e7249ddfc50f8e7319724fbac1378 Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Sat, 9 Dec 2017 19:46:22 +0000
+Subject: [PATCH 12/37] Themes: base: expose toast colors for themes
+
+Change-Id: I328ad1ffba231353254a8122b899bd71b5d1aa68
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ core/res/res/drawable/toast_frame.xml          | 3 +--
+ core/res/res/layout/transient_notification.xml | 4 +---
+ core/res/res/values/projekt_colors.xml         | 6 +++++-
+ core/res/res/values/projekt_symbols.xml        | 4 ++++
+ 4 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/core/res/res/drawable/toast_frame.xml b/core/res/res/drawable/toast_frame.xml
+index d57bd6a554e..085e081c80d 100644
+--- a/core/res/res/drawable/toast_frame.xml
++++ b/core/res/res/drawable/toast_frame.xml
+@@ -18,7 +18,6 @@
+ <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+     <!-- background is material_grey_200 with .9 alpha -->
+-    <solid android:color="#E6EEEEEE" />
++    <solid android:color="@color/toast_bg_color" />
+     <corners android:radius="22dp" />
+ </shape>
+-
+diff --git a/core/res/res/layout/transient_notification.xml b/core/res/res/layout/transient_notification.xml
+index db586ec37cf..23432c5b3ea 100644
+--- a/core/res/res/layout/transient_notification.xml
++++ b/core/res/res/layout/transient_notification.xml
+@@ -33,9 +33,7 @@
+         android:layout_marginVertical="15dp"
+         android:layout_gravity="center_horizontal"
+         android:textAppearance="@style/TextAppearance.Toast"
+-        android:textColor="@color/primary_text_default_material_light"
++        android:textColor="@color/toast_text_color"
+         />
+ 
+ </LinearLayout>
+-
+-
+diff --git a/core/res/res/values/projekt_colors.xml b/core/res/res/values/projekt_colors.xml
+index 4aee4d82adb..c2355ffd594 100644
+--- a/core/res/res/values/projekt_colors.xml
++++ b/core/res/res/values/projekt_colors.xml
+@@ -23,5 +23,9 @@
+     <color name="notification_ambient_default_color">@android:color/notification_text_default_color</color>
+ 
+     <!-- Notification sender text color -->
+-    <color name="sender_text_color">@android:color/black</color> 
++    <color name="sender_text_color">@android:color/black</color>
++
++    <!-- Toast text and bg colors -->
++    <color name="toast_bg_color">#E6EEEEEE</color>
++    <color name="toast_text_color">@color/primary_text_default_material_light</color>
+ </resources>
+diff --git a/core/res/res/values/projekt_symbols.xml b/core/res/res/values/projekt_symbols.xml
+index 36213317c7d..903784016d3 100644
+--- a/core/res/res/values/projekt_symbols.xml
++++ b/core/res/res/values/projekt_symbols.xml
+@@ -23,5 +23,9 @@
+ 
+   <!-- Notification sender text color -->
+   <java-symbol type="color" name="sender_text_color" /> 
++ 
++  <!-- Toast text and bg colors -->
++  <java-symbol type="color" name="toast_bg_color" />
++  <java-symbol type="color" name="toast_text_color" />
+ 
+ </resources>
+-- 
+2.18.0
+

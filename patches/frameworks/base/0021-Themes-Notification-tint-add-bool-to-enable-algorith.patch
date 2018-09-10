@@ -1,0 +1,89 @@
+From 71ea6d0685c441f54f5fcac22b65b46747b6b3ed Mon Sep 17 00:00:00 2001
+From: SpiritCroc <spiritcroc@gmail.com>
+Date: Sat, 10 Feb 2018 09:35:15 +0100
+Subject: [PATCH 21/37] Themes: Notification tint: add bool to enable algorithm
+ for dark backgrounds
+
+Overlay config_useDarkBgNotificationIconTextTinting to enable dark bg tinting
+(Android 8.1 version)
+
+Change-Id: I1c6043abde22c64c2f4ff1287ca209a25e4980c4
+---
+ core/java/android/app/Notification.java                    | 4 +++-
+ .../com/android/internal/util/NotificationColorUtil.java   | 4 +++-
+ core/res/res/values/projekt_config.xml                     | 4 ++++
+ core/res/res/values/projekt_symbols.xml                    | 7 ++++---
+ 4 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java
+index b5dd5b9e766..4975f0e4b88 100644
+--- a/core/java/android/app/Notification.java
++++ b/core/java/android/app/Notification.java
+@@ -4875,8 +4875,10 @@ public class Notification implements Parcelable
+                 ensureColors();
+                 color = mSecondaryTextColor;
+             } else {
++                boolean isDark = mInNightMode || mContext.getResources()
++                        .getBoolean(R.bool.config_useDarkBgNotificationIconTextTinting);
+                 color = NotificationColorUtil.resolveContrastColor(mContext, mN.color,
+-                        background, mInNightMode);
++                        background, isDark);
+             }
+             if (Color.alpha(color) < 255) {
+                 // alpha doesn't go well for color filters, so let's blend it manually
+diff --git a/core/java/com/android/internal/util/NotificationColorUtil.java b/core/java/com/android/internal/util/NotificationColorUtil.java
+index c72ac2d3650..491b9a8d5a5 100644
+--- a/core/java/com/android/internal/util/NotificationColorUtil.java
++++ b/core/java/com/android/internal/util/NotificationColorUtil.java
+@@ -459,8 +459,10 @@ public class NotificationColorUtil {
+      */
+     public static int resolveContrastColor(Context context, int notificationColor,
+             int backgroundColor) {
++        boolean isDark = context.getResources()
++                .getBoolean(R.bool.config_useDarkBgNotificationIconTextTinting);
+         return NotificationColorUtil.resolveContrastColor(context, notificationColor,
+-                backgroundColor, false /* isDark */);
++                backgroundColor, isDark);
+     }
+ 
+     /**
+diff --git a/core/res/res/values/projekt_config.xml b/core/res/res/values/projekt_config.xml
+index a6b5f894bbf..247fd9e2662 100644
+--- a/core/res/res/values/projekt_config.xml
++++ b/core/res/res/values/projekt_config.xml
+@@ -19,4 +19,8 @@
+     <!-- True if the notifications should dynamically tint the app icon and app title -->
+     <bool name="config_allowNotificationIconTextTinting">true</bool>
+ 
++    <!-- True if the notification's dynamic app icon/title tint should be optimised for dark
++    backgrounds (requires config_allowNotificationIconTextTinting to be true)-->
++    <bool name="config_useDarkBgNotificationIconTextTinting">false</bool>
++
+ </resources>
+diff --git a/core/res/res/values/projekt_symbols.xml b/core/res/res/values/projekt_symbols.xml
+index 903784016d3..f3bb9c94920 100644
+--- a/core/res/res/values/projekt_symbols.xml
++++ b/core/res/res/values/projekt_symbols.xml
+@@ -15,15 +15,16 @@
+      limitations under the License.
+ -->
+ <resources>
+- 
++
+   <!-- Notification icon/text dynamic tint -->
+   <java-symbol type="bool" name="config_allowNotificationIconTextTinting" />
++  <java-symbol type="bool" name="config_useDarkBgNotificationIconTextTinting" />
+   <java-symbol type="color" name="notification_text_default_color" />
+   <java-symbol type="color" name="notification_ambient_default_color" />
+ 
+   <!-- Notification sender text color -->
+-  <java-symbol type="color" name="sender_text_color" /> 
+- 
++  <java-symbol type="color" name="sender_text_color" />
++
+   <!-- Toast text and bg colors -->
+   <java-symbol type="color" name="toast_bg_color" />
+   <java-symbol type="color" name="toast_text_color" />
+-- 
+2.18.0
+

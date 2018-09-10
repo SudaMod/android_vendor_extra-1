@@ -1,0 +1,96 @@
+From b7d12822403856f06738526b1186fd621258dc58 Mon Sep 17 00:00:00 2001
+From: ezio84 <brabus84@gmail.com>
+Date: Fri, 28 Oct 2016 23:26:21 +0200
+Subject: [PATCH 19/37] Themes: Expose power save mode color
+
+PS: i suggest this sexy red: #ff8e0101
+https://s26.postimg.org/5tf5fh8eh/jessica-bob-_Chi-ha-incastrato-_Roger-_Rabbit-.jpg
+:D
+
+Change-Id: I39ac0b381f0762752cb8b2a73e96c90da491c0ab
+---
+ packages/SystemUI/res/values/projekt_colors.xml             | 3 +++
+ .../android/systemui/statusbar/phone/BarTransitions.java    | 6 ++++++
+ .../src/com/android/systemui/statusbar/phone/StatusBar.java | 3 ++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/res/values/projekt_colors.xml b/packages/SystemUI/res/values/projekt_colors.xml
+index fa3a56f3125..37b737d1053 100644
+--- a/packages/SystemUI/res/values/projekt_colors.xml
++++ b/packages/SystemUI/res/values/projekt_colors.xml
+@@ -30,4 +30,7 @@
+ 
+     <!-- QS edit page background color -->
+     <color name="qs_edit_item_decoration_bg">@*android:color/secondary_device_default_settings_light</color>
++
++    <!-- Power save warning color -->
++    <color name="powersave_warning_color">#ffff0000</color> <!-- red -->
+ </resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/BarTransitions.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/BarTransitions.java
+index 4bca7971542..1ded59c7eb5 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/BarTransitions.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/BarTransitions.java
+@@ -48,6 +48,7 @@ public class BarTransitions {
+     public static final int MODE_TRANSPARENT = 4;
+     public static final int MODE_WARNING = 5;
+     public static final int MODE_LIGHTS_OUT_TRANSPARENT = 6;
++    public static final int MODE_POWERSAVE_WARNING = 7;
+ 
+     public static final int LIGHTS_IN_DURATION = 250;
+     public static final int LIGHTS_OUT_DURATION = 1500;
+@@ -137,6 +138,7 @@ public class BarTransitions {
+         private final int mOpaque;
+         private final int mSemiTransparent;
+         private final int mTransparent;
++        private final int mPowerSaveWarning;
+         private final int mWarning;
+         private final Drawable mGradient;
+ 
+@@ -161,12 +163,14 @@ public class BarTransitions {
+                 mSemiTransparent = 0x7f0000ff;
+                 mTransparent = 0x2f0000ff;
+                 mWarning = 0xffff0000;
++                mPowerSaveWarning = 0xffff0000;
+             } else {
+                 mOpaque = context.getColor(R.color.system_bar_background_opaque);
+                 mSemiTransparent = context.getColor(
+                         com.android.internal.R.color.system_bar_background_semi_transparent);
+                 mTransparent = context.getColor(R.color.system_bar_background_transparent);
+                 mWarning = Utils.getColorAttr(context, android.R.attr.colorError);
++                mPowerSaveWarning = context.getColor(R.color.powersave_warning_color);
+             }
+             mGradient = context.getDrawable(gradientResourceId);
+         }
+@@ -238,6 +242,8 @@ public class BarTransitions {
+             int targetGradientAlpha = 0, targetColor = 0;
+             if (mMode == MODE_WARNING) {
+                 targetColor = mWarning;
++            } else if (mMode == MODE_POWERSAVE_WARNING) {
++                targetColor = mPowerSaveWarning;
+             } else if (mMode == MODE_TRANSLUCENT) {
+                 targetColor = mSemiTransparent;
+             } else if (mMode == MODE_SEMI_TRANSPARENT) {
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+index 18b0502840c..ddfc6d06629 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+@@ -31,6 +31,7 @@ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_SEMI_TRAN
+ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSLUCENT;
+ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_TRANSPARENT;
+ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_WARNING;
++import static com.android.systemui.statusbar.phone.BarTransitions.MODE_POWERSAVE_WARNING;
+ 
+ import android.animation.Animator;
+ import android.animation.AnimatorListenerAdapter;
+@@ -3665,7 +3666,7 @@ public class StatusBar extends SystemUI implements DemoMode,
+         final boolean anim = !mNoAnimationOnNextBarModeChange && mDeviceInteractive
+                 && windowState != WINDOW_STATE_HIDDEN && !powerSave;
+         if (powerSave && getBarState() == StatusBarState.SHADE) {
+-            mode = MODE_WARNING;
++            mode = MODE_POWERSAVE_WARNING;
+         }
+         transitions.transitionTo(mode, anim);
+     }
+-- 
+2.18.0
+

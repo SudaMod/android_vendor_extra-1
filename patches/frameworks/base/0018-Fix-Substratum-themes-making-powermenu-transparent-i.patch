@@ -1,0 +1,46 @@
+From fb56a75154e433c2a396c17146347f1daaf69f03 Mon Sep 17 00:00:00 2001
+From: Ezio Lacandia Bijelkic <account-1000215@substratum.review>
+Date: Thu, 28 Dec 2017 18:02:40 +0100
+Subject: [PATCH 18/37] Fix Substratum themes making powermenu transparent in
+ some cases
+
+e.g. on landscape, or portrait when using
+setDivisionView in the GlobalActionsDialog
+
+Change-Id: Ie73ffcc189791192b1f6d5d2c420d2254878723d
+---
+ .../src/com/android/systemui/HardwareBgDrawable.java         | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/HardwareBgDrawable.java b/packages/SystemUI/src/com/android/systemui/HardwareBgDrawable.java
+index 467ec2e50b4..470ec4f2ea6 100644
+--- a/packages/SystemUI/src/com/android/systemui/HardwareBgDrawable.java
++++ b/packages/SystemUI/src/com/android/systemui/HardwareBgDrawable.java
+@@ -76,13 +76,15 @@ public class HardwareBgDrawable extends LayerDrawable {
+ 
+     @Override
+     public void draw(Canvas canvas) {
++        Rect bounds = getBounds();
+         if (mPoint >= 0 && !mRotatedBackground) {
+-            Rect bounds = getBounds();
+             int top = bounds.top + mPoint;
+             if (top > bounds.bottom) top = bounds.bottom;
+             if (mRoundTop) {
+                 mLayers[0].setBounds(bounds.left, bounds.top, bounds.right, top);
++                mLayers[1].setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom);
+             } else {
++                mLayers[0].setBounds(bounds.left, bounds.top, bounds.right, top);
+                 mLayers[1].setBounds(bounds.left, top, bounds.right, bounds.bottom);
+             }
+             if (mRoundTop) {
+@@ -93,6 +95,7 @@ public class HardwareBgDrawable extends LayerDrawable {
+                 mLayers[1].draw(canvas);
+             }
+         } else {
++            mLayers[0].setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom);
+             mLayers[0].draw(canvas);
+         }
+     }
+-- 
+2.18.0
+

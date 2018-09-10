@@ -1,0 +1,36 @@
+From 237670dcf61087956c9d8a3aafcf2529979eb0dd Mon Sep 17 00:00:00 2001
+From: Ivan Iskandar <iiiiskandar14@gmail.com>
+Date: Sat, 10 Mar 2018 13:34:52 +0700
+Subject: [PATCH 33/37] OMS: Dismantle FLAG_OVERLAY_TRUSTED check in
+ isOverlayPackage
+
+This was added with commit 7a722dcae9ac but this appears to be an
+incomplete attempt at doing what it should, because FLAG_OVERLAY_TRUSTED
+is never assigned, only checked. While we wait for Google to realise this
+and push a fuller commit for us to mitigate against, this bandaid does the
+trick.
+
+[harsh@prjkt.io: Add commit log]
+Change-Id: Ic8668f4d2769b9b5daeea56cd6562674258a10b1
+Signed-off-by: Harsh Shandilya <harsh@prjkt.io>
+---
+ .../core/java/com/android/server/om/OverlayManagerService.java | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/services/core/java/com/android/server/om/OverlayManagerService.java b/services/core/java/com/android/server/om/OverlayManagerService.java
+index 0b3efdba212..2940a6e3fc8 100644
+--- a/services/core/java/com/android/server/om/OverlayManagerService.java
++++ b/services/core/java/com/android/server/om/OverlayManagerService.java
+@@ -669,8 +669,7 @@ public final class OverlayManagerService extends SystemService {
+     };
+ 
+     private boolean isOverlayPackage(@NonNull final PackageInfo pi) {
+-        return pi != null && pi.overlayTarget != null
+-                && (pi.overlayFlags & PackageInfo.FLAG_OVERLAY_TRUSTED) != 0;
++        return pi != null && pi.overlayTarget != null;
+     }
+ 
+     private final class OverlayChangeListener
+-- 
+2.18.0
+

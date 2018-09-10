@@ -1,0 +1,231 @@
+From fc5f38f128ec8874ac21883381a47fbdc3155d6b Mon Sep 17 00:00:00 2001
+From: Ivan Iskandar <iiiiskandar14@gmail.com>
+Date: Mon, 5 Dec 2016 19:00:04 +0700
+Subject: [PATCH 04/37] Themes: SystemUI: Use own drawables for QS expand icon
+
+forward ported and adapted to oreo-mr1 changes.
+
+This was using the volume panel drawables used also on volume panel.
+So with this commit themers can give different icon for either QS
+and volume panel expand icon.
+
+Change-Id: Ice8d8a520b9b22ba773cceb885e11c8a4bbf6d5f
+---
+ .../SystemUI/res/drawable/ic_qs_collapse.xml  | 55 +++++++++++++++++++
+ .../res/drawable/ic_qs_collapse_animation.xml | 25 +++++++++
+ .../SystemUI/res/drawable/ic_qs_expand.xml    | 55 +++++++++++++++++++
+ .../res/drawable/ic_qs_expand_animation.xml   | 25 +++++++++
+ .../statusbar/phone/ExpandableIndicator.java  |  8 +--
+ 5 files changed, 164 insertions(+), 4 deletions(-)
+ create mode 100644 packages/SystemUI/res/drawable/ic_qs_collapse.xml
+ create mode 100644 packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
+ create mode 100644 packages/SystemUI/res/drawable/ic_qs_expand.xml
+ create mode 100644 packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
+
+diff --git a/packages/SystemUI/res/drawable/ic_qs_collapse.xml b/packages/SystemUI/res/drawable/ic_qs_collapse.xml
+new file mode 100644
+index 00000000000..3853d121ce2
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/ic_qs_collapse.xml
+@@ -0,0 +1,55 @@
++<!--
++     Copyright (C) 2017 The Android Open Source Project
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<vector
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    android:name="ic_caret_down"
++    android:width="24dp"
++    android:viewportWidth="24"
++    android:height="24dp"
++    android:viewportHeight="24"
++    android:tint="?android:attr/colorControlNormal" >
++    <group
++        android:name="caret___4" >
++        <group
++            android:name="right"
++            android:translateX="11.287"
++            android:translateY="8.701"
++            android:rotation="45" >
++            <group
++                android:name="right_pivot"
++                android:translateX="4.242" >
++                <path
++                    android:name="rectangle_path_1"
++                    android:fillColor="#FFFFFFFF"
++                    android:pathData="M -3.242,-1.0 l 6.484,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l -6.484,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z" />
++            </group>
++        </group>
++        <group
++            android:name="left"
++            android:translateX="12.699"
++            android:translateY="8.701"
++            android:rotation="-45" >
++            <group
++                android:name="left_pivot"
++                android:translateX="-4.242" >
++                <path
++                    android:name="rectangle_path_2"
++                    android:fillColor="#FFFFFFFF"
++                    android:pathData="M -3.242,-1.0 l 6.484,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l -6.484,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z" />
++            </group>
++        </group>
++    </group>
++</vector>
+diff --git a/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml b/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
+new file mode 100644
+index 00000000000..18c6307b9ad
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/ic_qs_collapse_animation.xml
+@@ -0,0 +1,25 @@
++<!--
++     Copyright (C) 2017 The Android Open Source Project
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<animated-vector
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    android:drawable="@drawable/ic_volume_collapse" >
++    <target
++        android:name="right"
++        android:animation="@anim/ic_caret_down_right_animation" />
++    <target
++        android:name="left"
++        android:animation="@anim/ic_caret_down_left_animation" />
++</animated-vector>
+diff --git a/packages/SystemUI/res/drawable/ic_qs_expand.xml b/packages/SystemUI/res/drawable/ic_qs_expand.xml
+new file mode 100644
+index 00000000000..79ff8080643
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/ic_qs_expand.xml
+@@ -0,0 +1,55 @@
++<!--
++     Copyright (C) 2017 The Android Open Source Project
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<vector
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    android:name="ic_caret_up"
++    android:width="24dp"
++    android:viewportWidth="24"
++    android:height="24dp"
++    android:viewportHeight="24"
++    android:tint="?android:attr/colorControlNormal" >
++    <group
++        android:name="caret___4" >
++        <group
++            android:name="right"
++            android:translateX="11.287"
++            android:translateY="15.287"
++            android:rotation="-45" >
++            <group
++                android:name="right_pivot"
++                android:translateX="4.242" >
++                <path
++                    android:name="rectangle_path_1"
++                    android:fillColor="#FFFFFFFF"
++                    android:pathData="M -3.242,-1.0 l 6.484,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l -6.484,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z" />
++            </group>
++        </group>
++        <group
++            android:name="left"
++            android:translateX="12.699"
++            android:translateY="15.287"
++            android:rotation="45" >
++            <group
++                android:name="left_pivot"
++                android:translateX="-4.242" >
++                <path
++                    android:name="rectangle_path_2"
++                    android:fillColor="#FFFFFFFF"
++                    android:pathData="M -3.242,-1.0 l 6.484,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l -6.484,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z" />
++            </group>
++        </group>
++    </group>
++</vector>
+diff --git a/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml b/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
+new file mode 100644
+index 00000000000..abd6678e335
+--- /dev/null
++++ b/packages/SystemUI/res/drawable/ic_qs_expand_animation.xml
+@@ -0,0 +1,25 @@
++<!--
++     Copyright (C) 2017 The Android Open Source Project
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<animated-vector
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    android:drawable="@drawable/ic_volume_expand" >
++    <target
++        android:name="right"
++        android:animation="@anim/ic_caret_up_right_animation" />
++    <target
++        android:name="left"
++        android:animation="@anim/ic_caret_up_left_animation" />
++</animated-vector>
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ExpandableIndicator.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ExpandableIndicator.java
+index 8f49c85b093..72ec7a7783e 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/ExpandableIndicator.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/ExpandableIndicator.java
+@@ -57,11 +57,11 @@ public class ExpandableIndicator extends ImageView {
+ 
+     private int getDrawableResourceId(boolean expanded) {
+         if (mIsDefaultDirection) {
+-            return expanded ? R.drawable.ic_volume_collapse_animation
+-                    : R.drawable.ic_volume_expand_animation;
++            return expanded ? R.drawable.ic_qs_collapse_animation
++                    : R.drawable.ic_qs_expand_animation;
+         } else {
+-            return expanded ? R.drawable.ic_volume_expand_animation
+-                    : R.drawable.ic_volume_collapse_animation;
++            return expanded ? R.drawable.ic_qs_expand_animation
++                    : R.drawable.ic_qs_collapse_animation;
+         }
+     }
+ 
+-- 
+2.18.0
+

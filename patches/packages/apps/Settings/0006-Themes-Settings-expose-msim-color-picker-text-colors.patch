@@ -1,0 +1,84 @@
+From d11cc98e8f0aa119248bb38d48492a3625bc1831 Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Sat, 6 Jan 2018 08:45:37 +0000
+Subject: [PATCH 6/9] Themes: Settings: expose msim color picker text colors
+
+Change-Id: Ifea22f3e7af08dda3242a444842dfedd82cd354d
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ res/layout/multi_sim_dialog.xml           | 6 +++---
+ res/layout/settings_color_picker_item.xml | 4 ++--
+ res/values/projekt_colors.xml             | 8 +++++++-
+ 3 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/res/layout/multi_sim_dialog.xml b/res/layout/multi_sim_dialog.xml
+index d0e7df8758..55fbead7ec 100644
+--- a/res/layout/multi_sim_dialog.xml
++++ b/res/layout/multi_sim_dialog.xml
+@@ -44,7 +44,7 @@
+                     android:hint="@string/sim_name_hint"
+                     android:inputType="textNoSuggestions"
+                     android:maxLength="@integer/sim_name_length"
+-                    android:textColor="@android:color/black"
++                    android:textColor="@color/sim_color_picker_list_text_color"
+                     style="?android:attr/textAppearanceMedium" />
+ 
+         </LinearLayout>
+@@ -82,7 +82,7 @@
+                     android:text="@string/sim_editor_carrier" />
+ 
+             <TextView android:id="@+id/carrier"
+-                    android:textColor="@android:color/black"
++                    android:textColor="@color/sim_color_picker_carrier_text_color"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:paddingStart="@dimen/sim_content_padding"
+@@ -110,7 +110,7 @@
+                     android:paddingBottom="@dimen/sim_dialog_margin_bottom"
+                     android:paddingStart="@dimen/sim_content_padding"
+                     android:singleLine="true"
+-                    android:textColor="@android:color/black"
++                    android:textColor="@color/sim_color_picker_number_text_color"
+                     style="?android:attr/textAppearanceMedium" />
+ 
+         </LinearLayout>
+diff --git a/res/layout/settings_color_picker_item.xml b/res/layout/settings_color_picker_item.xml
+index c171950d18..3750bfeef3 100644
+--- a/res/layout/settings_color_picker_item.xml
++++ b/res/layout/settings_color_picker_item.xml
+@@ -41,7 +41,7 @@
+         android:paddingBottom="8dp"
+         android:paddingRight="8dp"
+         android:paddingLeft="8dp"
+-        android:textColor="@android:color/black"
++        android:textColor="@color/sim_color_picker_edit_text_color"
+         style="?android:attr/textAppearanceMedium" />
+ 
+-</LinearLayout>
+\ No newline at end of file
++</LinearLayout>
+diff --git a/res/values/projekt_colors.xml b/res/values/projekt_colors.xml
+index 3300217182..760ee99dc1 100644
+--- a/res/values/projekt_colors.xml
++++ b/res/values/projekt_colors.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<!-- Copyright (c) 2016-2017 Projekt Substratum
++<!-- Copyright (c) 2016-2018 Projekt Substratum
+ 
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+@@ -51,4 +51,10 @@
+     <color name="suggestion_condition_card_header_title_text_color">@*android:color/accent_device_default_light</color>
+     <color name="suggestion_condition_card_header_summary_text_color">@*android:color/accent_device_default_light</color>
+ 
++    <!-- MSIM Color picker dialog colors -->
++    <color name="sim_color_picker_edit_text_color">@android:color/black</color>
++    <color name="sim_color_picker_list_text_color">@android:color/black</color>
++    <color name="sim_color_picker_carrier_text_color">@android:color/black</color>
++    <color name="sim_color_picker_number_text_color">@android:color/black</color>
++    
+ </resources>
+-- 
+2.18.0
+

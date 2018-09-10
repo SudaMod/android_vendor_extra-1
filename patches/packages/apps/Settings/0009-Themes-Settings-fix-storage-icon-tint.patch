@@ -1,0 +1,63 @@
+From d3f7a039463e3ed7e210c8935566cb447cabec91 Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Thu, 12 Apr 2018 13:48:50 +0000
+Subject: [PATCH 9/9] Themes: Settings: fix storage icon tint
+
+* Commit: SubstratumResources/platform_packages_apps_settings@8af7a45
+  changes storage summary and icon color to textColorSecondary due to that
+  themers could not theme it accent
+
+* since colorControlNormal is the attrs used everywhere on settings for icons,
+  change textColorSecondary to colorControlNormal
+
+* themes already changes colorControlNormal to colorAccent in base style
+
+Change-Id: I456b34fbaaae2b78e4c9053b3d1da80de31cbeaf
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ .../settings/deviceinfo/StorageVolumePreference.java      | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/com/android/settings/deviceinfo/StorageVolumePreference.java b/src/com/android/settings/deviceinfo/StorageVolumePreference.java
+index ab803835c2..2d028f04bb 100644
+--- a/src/com/android/settings/deviceinfo/StorageVolumePreference.java
++++ b/src/com/android/settings/deviceinfo/StorageVolumePreference.java
+@@ -45,7 +45,7 @@ public class StorageVolumePreference extends Preference {
+     private final VolumeInfo mVolume;
+ 
+     private int mColor;
+-    private int mSecondaryColor;
++    private int mIconColor;
+     private int mUsedPercent = -1;
+ 
+     // TODO: ideally, VolumeInfo should have a total physical size.
+@@ -56,7 +56,7 @@ public class StorageVolumePreference extends Preference {
+         mVolume = volume;
+         mColor = color;
+ 
+-        mSecondaryColor = Utils.getColorAttr(context, android.R.attr.textColorSecondary);
++        mIconColor = Utils.getColorAttr(context, android.R.attr.colorControlNormal);
+ 
+         setLayoutResource(R.layout.storage_volume);
+ 
+@@ -97,7 +97,7 @@ public class StorageVolumePreference extends Preference {
+         }
+ 
+         icon.mutate();
+-        icon.setTint(mColor);
++        icon.setTint(mIconColor);
+         setIcon(icon);
+ 
+         if (volume.getType() == VolumeInfo.TYPE_PUBLIC
+@@ -111,7 +111,7 @@ public class StorageVolumePreference extends Preference {
+     public void onBindViewHolder(PreferenceViewHolder view) {
+         final ImageView unmount = (ImageView) view.findViewById(R.id.unmount);
+         if (unmount != null) {
+-            unmount.setImageTintList(ColorStateList.valueOf(mSecondaryColor));
++            unmount.setImageTintList(ColorStateList.valueOf(mIconColor));
+             unmount.setOnClickListener(mUnmountListener);
+         }
+ 
+-- 
+2.18.0
+

@@ -1,0 +1,90 @@
+From 46e3f4ac567a828d361b5ca29aad869fbac5328a Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Mon, 2 Jul 2018 16:42:19 +0530
+Subject: [PATCH 37/37] Themes: SystemUI: Expose QS tiles unavailable color
+
+* Commit: https://substratum.review/c/SubstratumResources/platform_frameworks_base/+/500
+  Added ability to tint QS tiles but only for Enabled and Disabled states.
+
+* This patch adds missing exposure for Unavailable state
+
+* Unavailable state is used by data, hotspot tiles when Airplane mode turned on.
+
+Change-Id: I7178dd5508605e418aca80b867d8635034c4a739
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ packages/SystemUI/res/values/projekt_colors.xml     |  7 ++++---
+ .../android/systemui/qs/tileimpl/QSTileImpl.java    | 13 +++++++++----
+ .../res/values/projekt_colors.xml                   |  1 +
+ 3 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/packages/SystemUI/res/values/projekt_colors.xml b/packages/SystemUI/res/values/projekt_colors.xml
+index 2bd8733f532..9d0b4bc7efb 100644
+--- a/packages/SystemUI/res/values/projekt_colors.xml
++++ b/packages/SystemUI/res/values/projekt_colors.xml
+@@ -39,11 +39,12 @@
+     <color name="screen_pinning_positive_text_color">@android:color/white</color>
+     <color name="screen_pinning_negative_text_color">@android:color/white</color>
+ 
+-    <!-- QS tiles Active and Inactive tint (Requires config_enable_qs_tile_tinting bool set to true) -->
++    <!-- QS tiles Active, Inactive and Unavailable tint (Requires config_enable_qs_tile_tinting bool set to true) -->
+     <color name="qs_tiles_active_tint">@*android:color/primary_text_default_material_light</color>
+     <color name="qs_tiles_inactive_tint">@*android:color/hint_foreground_material_light</color>
+-    
+-    <!-- QS tiles expand, underline and label colors -->    
++    <color name="qs_tiles_unavailable_tint">@*android:color/foreground_material_light</color> <!-- keep in mind that the code adds 0.26 (light) or 0.30 (dark) alpha to this color. -->
++
++    <!-- QS tiles expand, underline and label colors -->
+     <color name="qs_tiles_expand_tint">@*android:color/text_color_primary</color>
+     <color name="qs_tiles_label_color">@*android:color/text_color_primary</color>
+     <color name="qs_tiles_underline_color">@*android:color/foreground_material_light</color>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+index a3d9faaa956..257d4ebeed3 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+@@ -372,13 +372,18 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
+     public abstract CharSequence getTileLabel();
+ 
+     public static int getColorForState(Context context, int state) {
+-        
++
+         boolean enableQsTileTinting = context.getResources().getBoolean(R.bool.config_enable_qs_tile_tinting);
+ 
+         switch (state) {
+             case Tile.STATE_UNAVAILABLE:
+-                return Utils.getDisabled(context,
+-                        Utils.getColorAttr(context, android.R.attr.colorForeground));
++                if (!enableQsTileTinting) {
++                    return Utils.getDisabled(context,
++                            Utils.getColorAttr(context, android.R.attr.colorForeground));
++                } else {
++                    return Utils.getDisabled(context,
++                            context.getResources().getColor(R.color.qs_tiles_unavailable_tint));
++                }
+             case Tile.STATE_INACTIVE:
+                 if (!enableQsTileTinting) {
+                     return Utils.getColorAttr(context, android.R.attr.textColorHint);
+@@ -387,7 +392,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
+                 }
+             case Tile.STATE_ACTIVE:
+                 if (!enableQsTileTinting) {
+-                    return Utils.getColorAttr(context, android.R.attr.textColorPrimary); 
++                    return Utils.getColorAttr(context, android.R.attr.textColorPrimary);
+                 } else {
+                     return context.getResources().getColor(R.color.qs_tiles_active_tint);
+                 }
+diff --git a/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml b/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
+index 1aafc76d23e..c77fc956fd4 100644
+--- a/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
++++ b/packages/overlays/SysuiDarkThemeOverlay/res/values/projekt_colors.xml
+@@ -23,6 +23,7 @@
+     <!-- QS tiles and label colors -->
+     <color name="qs_tiles_active_tint">@*android:color/primary_text_default_material_dark</color>
+     <color name="qs_tiles_inactive_tint">@*android:color/hint_foreground_material_dark</color>
++    <color name="qs_tiles_unavailable_tint">@*android:color/foreground_material_dark</color>
+     <color name="qs_tiles_underline_color">@*android:color/foreground_material_dark</color>
+ 
+ </resources>
+-- 
+2.18.0
+
